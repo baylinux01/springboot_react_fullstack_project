@@ -1,5 +1,7 @@
 package com.demo.webapideneme1.models;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -26,9 +28,9 @@ public class Message {
 	@ManyToOne
 	private User messageReceiver;
 	//@JsonFormat(shape=JsonFormat.Shape.STRING,pattern="dd-MM-yyyy")
-	private Date messageDate=new Date();
+	private LocalDateTime messageDate=LocalDateTime.now(ZoneId.of("Turkey"));
 	//@JsonFormat(shape=JsonFormat.Shape.STRING,pattern="dd-MM-yyyy")
-	private Date messageEditDate=new Date();
+	private LocalDateTime messageEditDate=LocalDateTime.now(ZoneId.of("Turkey"));
 	private String messageContent;
 	
 	@ManyToOne
@@ -53,16 +55,17 @@ public class Message {
 	public void setMessageReceiver(User messageReceiver) {
 		this.messageReceiver = messageReceiver;
 	}
-	public Date getMessageDate() {
+	
+	public LocalDateTime getMessageDate() {
 		return messageDate;
 	}
-	public void setMessageDate(Date messageDate) {
+	public void setMessageDate(LocalDateTime messageDate) {
 		this.messageDate = messageDate;
 	}
-	public Date getMessageEditDate() {
+	public LocalDateTime getMessageEditDate() {
 		return messageEditDate;
 	}
-	public void setMessageEditDate(Date messageEditDate) {
+	public void setMessageEditDate(LocalDateTime messageEditDate) {
 		this.messageEditDate = messageEditDate;
 	}
 	public String getMessageContent() {

@@ -9,6 +9,7 @@ import Row from 'react-bootstrap/Row';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import _ from "lodash";
 import { Modal, ListGroup, ListGroupItem } from 'react-bootstrap';
+import moment from "moment";
 
 
 
@@ -41,7 +42,7 @@ function fetchComments(){
     axios.defaults.baseURL="http://localhost:8080";
     axios.get("/comments/getcommentsofagroup",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{groupId:groupId}}).then((response)=>{setGroupComments([...response.data])});
   }
-  function fetchPosts(){
+  function fetchPostsOfAGroup(){
     axios.defaults.baseURL="http://localhost:8080";
     axios.get("/posts/getpostsofagroup",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{groupId:groupId}}).then((response)=>{setGroupPosts([...response.data])});
   }
@@ -104,7 +105,7 @@ function fetchComments(){
     axios.delete("/comments/deletecomment",
       {auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{commentId:commentId}});
     fetchComments();
-    fetchPosts();
+    fetchPostsOfAGroup();
     // axios.defaults.baseURL="http://localhost:8080";
     // const qs=require('qs');
     // axios.delete("/comments/deletecomment", 
@@ -123,7 +124,7 @@ function fetchComments(){
     axios.delete("/medias/deletemedia",
       {auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{id:mediaId}});
     fetchComments();
-    fetchPosts();
+    fetchPostsOfAGroup();
     // axios.defaults.baseURL="http://localhost:8080";
     // const qs=require('qs');
     // axios.delete("/comments/deletecomment", 
@@ -152,7 +153,7 @@ function fetchComments(){
   //   },
   //   params: params
   // });
-  fetchPosts();
+  fetchPostsOfAGroup();
   fetchComments();
   setShowPopUp(false);
   window.history.go(0);
@@ -283,7 +284,7 @@ function fetchComments(){
     
          fetchUser();
         fetchGroup();
-        fetchPosts();
+        fetchPostsOfAGroup();
         fetchComments();
         fetchMembers();   
         fetchBannedUsersOfUser();
@@ -331,7 +332,7 @@ function fetchComments(){
       
     });
       
-      fetchPosts();
+      fetchPostsOfAGroup();
       fetchComments();
       fetchMembers();
       fetchGroup();
@@ -427,14 +428,20 @@ function fetchComments(){
         {post.comment!=null?
         <div>
           {post.comment.quotedComment!=null?
-          <div>
+          <div style={{backgroundColor:"yellow"}}>
             <div>Quoted Comment Owner-{post.comment.quotedComment.owner.name} {post.comment.quotedComment.owner.surname}</div>
             <div>Quoted Comment Content- {post.comment.quotedComment.content}</div>
+            <div>Quoted Comment Date-{moment(post.comment.quotedComment.commentDate).format("HH:mm DD-MM-yyyy")}</div>
+          <div>Edited at-{moment(post.comment.quotedComment.commentEditDate).format("HH:mm DD-MM-yyyy")}</div>
           </div>
           :<div></div>
           }
+          <div style={{backgroundColor:"gray"}}>
           <div>Comment Owner-{post.comment.owner.name} {post.comment.owner.surname}</div>
-          <div>Comment Content- {post.comment.content}</div>
+          <div>Comment Content- {post.comment.content} </div>
+          <div>Comment Date-{moment(post.comment.commentDate).format("HH:mm DD-MM-yyyy")}</div>
+          <div>Edited at-{moment(post.comment.commentEditDate).format("HH:mm DD-MM-yyyy")}</div>
+          </div>
           <div>
             <Button onClick={()=>{setCommentToBeQuoted(post.comment)}}>Quote</Button>
             <Modal show={showPopUp} onHide={()=>setShowPopUp(false)}>
@@ -518,7 +525,7 @@ function fetchComments(){
   }
   {_.find(group.members,user)&&permissionsOfCurrentUserForAGroup.includes("SENDMESSAGE")?
   <div>
-    <input type='text' onChange={(e)=>{setNewCommentContent(e.target.value);console.log(newCommentContent)}}/>
+    <input type='text' value={newCommentContent} onChange={(e)=>{setNewCommentContent(e.target.value);console.log(newCommentContent)}}/>
     <Button onClick={()=>handlenewcomment()}>Make New Comment</Button>
     <br></br>
   </div>

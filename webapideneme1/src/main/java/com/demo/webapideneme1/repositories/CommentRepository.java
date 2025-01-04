@@ -12,6 +12,8 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
 	List<Comment> findByGroupId(long groupId);
 
+	List<Comment> findByQuotedComment(Comment comment);
+
 	
 
 }

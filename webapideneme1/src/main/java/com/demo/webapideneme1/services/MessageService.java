@@ -1,14 +1,19 @@
 package com.demo.webapideneme1.services;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.webapideneme1.models.Message;
+import com.demo.webapideneme1.models.MessagePost;
 import com.demo.webapideneme1.models.User;
+import com.demo.webapideneme1.repositories.MessagePostRepository;
 import com.demo.webapideneme1.repositories.MessageRepository;
 import com.demo.webapideneme1.repositories.UserRepository;
 
@@ -18,19 +23,22 @@ import jakarta.servlet.http.HttpServletRequest;
 public class MessageService {
 	UserRepository userRepository;
 	MessageRepository messageRepository;
+	MessagePostRepository messagePostRepository;
 	
 	@Autowired
-	public MessageService(UserRepository userRepository, MessageRepository messageRepository) {
+	public MessageService(UserRepository userRepository, MessageRepository messageRepository
+			,MessagePostRepository messagePostRepository) {
 		super();
 		this.userRepository=userRepository;
 		this.messageRepository = messageRepository;
+		this.messagePostRepository=messagePostRepository;
 	}
 
 	public Message getOneMessageById(Long messageId) {
 		
 		return messageRepository.findById(messageId).orElse(null);
 	}
-
+	@Transactional
 	public String createMessage(HttpServletRequest request, Long messageReceiverId, 
 			String messageContent, Long quotedMessageId) 
 	{
@@ -62,6 +70,11 @@ public class MessageService {
 			message.setQuotedMessage(quotedMessage);
 			message.setMessageContent(messageContent);
 			messageRepository.save(message);
+			MessagePost messagePost=new MessagePost();
+			messagePost.setSender(messageSender);
+			messagePost.setReceiver(messageReceiver);
+			messagePost.setMessage(message);
+			messagePostRepository.save(messagePost);
 			return "success";
 			
 		}else
@@ -78,7 +91,7 @@ public class MessageService {
 		if(message!=null&&message.getMessageSender()==user)
 		{
 			message.setMessageContent(newMessageContent);
-			message.setMessageEditDate(new Date());
+			message.setMessageEditDate(LocalDateTime.now(ZoneId.of("Turkey")));
 			messageRepository.save(message);
 			return "success";
 		}
@@ -98,7 +111,7 @@ public class MessageService {
 		if(message!=null&&message.getQuotedMessage().getMessageSender()==user)
 		{
 			message.setQuotedMessage(newQuotedMessage);
-			message.setMessageEditDate(new Date());
+			message.setMessageEditDate(LocalDateTime.now(ZoneId.of("Turkey")));
 			messageRepository.save(message);
 			return "success";
 		}
@@ -115,6 +128,22 @@ public class MessageService {
 		
 		if(message!=null&&(message.getMessageSender()==user||user.getRoles().contains("ADMIN")))
 		{
+			MessagePost messagePost=messagePostRepository.findByMessage(message);
+			List<Message> quotingMessages=messageRepository.findByQuotedMessage(message);
+			if(quotingMessages!=null)
+			{
+				for(Message quotingMessage: quotingMessages)
+				{
+					quotingMessage.setQuotedMessage(null);
+					messageRepository.save(quotingMessage);
+				}
+			}
+			if(messagePost!=null)
+			{
+				messagePost.setMessage(null);
+				messagePostRepository.save(messagePost);
+				messagePostRepository.delete(messagePost);
+			}
 			messageRepository.delete(message);
 			return "message deleted";
 		}

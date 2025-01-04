@@ -16,6 +16,8 @@ public interface MessageRepository extends JpaRepository<Message,Long>{
 			+ "or (m.message_sender_id=:user2Id and m.message_receiver_id=:user1Id) order by message_date",nativeQuery=true)
 	List<Message> findByMessageSenderandMessageReceiver(Long user1Id, Long user2Id);
 
+	List<Message> findByQuotedMessage(Message message);
+
 	
 	
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.webapideneme1.models.Comment;
 import com.demo.webapideneme1.models.Group;
@@ -61,7 +61,7 @@ public class CommentService {
 		
 		return comment;
 	}
-
+	@Transactional
 	public String deleteComment(HttpServletRequest request,long commentId) {
 		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
 		Principal pl=request.getUserPrincipal();
@@ -77,6 +77,15 @@ public class CommentService {
 				post.setComment(null);
 				postRepository.save(post);
 				postRepository.delete(post);
+			}
+			List<Comment> quotingComments=commentRepository.findByQuotedComment(comment);
+			if(quotingComments!=null)
+			{
+				for(Comment quotingComment:quotingComments)
+				{
+					quotingComment.setQuotedComment(null);
+					commentRepository.save(quotingComment);
+				}
 			}
 			commentRepository.deleteById(commentId);
 			return "Comment succesfully deleted";

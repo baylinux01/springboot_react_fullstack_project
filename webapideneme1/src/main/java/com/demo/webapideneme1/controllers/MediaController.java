@@ -54,6 +54,11 @@ public class MediaController {
 		
 		return mediaService.sendMediaToAGroup(request,multipartFileToBeUploaded,groupId);
 	}
+	@PostMapping("/sendmediaasamessagepost/{receiverId}")
+	public String sendMediaAsAMessagePost(HttpServletRequest request,MultipartFile multipartFileToBeUploaded,@PathVariable Long receiverId)
+	{
+		return mediaService.sendMediaAsAMessagePost(request,multipartFileToBeUploaded,receiverId);
+	}
 	@GetMapping("/getmediasofagroup")
 	public List<Post> getMediasOfAGroup(HttpServletRequest request,Long groupId)
 	{
