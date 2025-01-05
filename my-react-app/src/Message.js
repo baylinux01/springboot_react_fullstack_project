@@ -198,7 +198,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
 
     }, [])
     
-  
+   const serverUrl="http://localhost:8088";
     return (
     <div style={{overflow:"scroll",border:"1px solid black", width:"900px",height:"auto",marginLeft:"50px",marginTop:"50px"}}>
         {messagePosts.map(m => { 
@@ -249,7 +249,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
           {m.media.content_type.includes("image")?
           <div>
             
-              <img src={m.media.media_address} style={{width:"50px",height:"50px"}}/>
+              <img src={`${serverUrl}/${m.media.name}`} style={{width:"50px",height:"50px"}}/>
               
             
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
@@ -261,7 +261,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
           <div>
             
               <audio controls>
-                <source src={m.media.media_address} type={m.media.content_type}/>
+                <source src={`${serverUrl}/${m.media.name}`} type={m.media.content_type}/>
               </audio>
               
             
@@ -274,7 +274,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
           <div>
             
               <video controls>
-                <source src={m.media.media_address} type={m.media.content_type}/>
+                <source src={`${serverUrl}/${m.media.name}`} type={m.media.content_type}/>
               </video>
               
             

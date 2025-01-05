@@ -350,7 +350,7 @@ function fetchComments(){
     
     
     
-
+   const serverUrl="http://localhost:8088";
 
 
   return (
@@ -473,8 +473,8 @@ function fetchComments(){
         <div>
           {post.media.content_type.includes("image")?
           <div>
-            
-              <img src={post.media.media_address} style={{width:"50px",height:"50px"}}/>
+              
+              <img src={`${serverUrl}/${post.media.name}`} style={{width:"50px",height:"50px"}}/>
               
             
             <Button variant='danger' onClick={()=>{deleteMedia(post.media.id)}}>Delete</Button>
@@ -486,7 +486,7 @@ function fetchComments(){
           <div>
             
               <audio controls>
-                <source src={post.media.media_address} type={post.media.content_type}/>
+              <source src={`${serverUrl}/${post.media.name}`} type={post.media.content_type}/>
               </audio>
               
             
@@ -499,7 +499,7 @@ function fetchComments(){
           <div>
             
               <video controls>
-                <source src={post.media.media_address} type={post.media.content_type}/>
+                <source src={`${serverUrl}/${post.media.name}`} type={post.media.content_type}/>
               </video>
               
             
