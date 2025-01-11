@@ -288,7 +288,7 @@ public class UserService {
 		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
 		User blockingUser=userRepository.findByUsername(username);
 		User userToBeBlocked=userRepository.findById(userToBeBlockedId).orElse(null);
-		if(blockingUser==userToBeBlocked) return "false";
+		if(blockingUser==userToBeBlocked) return "blockingUser and userToBeBlocked cannot be the same person";
 		if(!blockingUser.getBlockedUsers().contains(userToBeBlocked))
 		{
 			if(blockingUser.getConnections().contains(userToBeBlocked))
@@ -525,6 +525,44 @@ public class UserService {
 			}
 		}
 		return "user image not found";
+	}
+
+
+
+
+
+	public List<User> getBlockedUsersOfAUser(HttpServletRequest request, Long userId) {
+		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
+		Principal pl=request.getUserPrincipal();
+		String username=pl.getName();
+		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
+		User user=userRepository.findByUsername(username);
+		User user2=userRepository.findById(userId).orElse(null);
+		if(user2!=null&&user2.getBlockedUsers()!=null)
+		return user2.getBlockedUsers();
+		else return null;
+	}
+
+
+
+
+
+	public String unblockUser(HttpServletRequest request, Long userToBeUnblockedId) {
+		Principal pl=request.getUserPrincipal();
+		String username=pl.getName();
+		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
+		User unblockingUser=userRepository.findByUsername(username);
+		User userToBeUnblocked=userRepository.findById(userToBeUnblockedId).orElse(null);
+		if(unblockingUser==userToBeUnblocked) return "unblockingUser and userToBeUnblocked cannot be the same person";
+		if(unblockingUser.getBlockedUsers().contains(userToBeUnblocked))
+		{
+			List<User> blockedUsers=unblockingUser.getBlockedUsers();
+			blockedUsers.remove(userToBeUnblocked);
+			unblockingUser.setBlockedUsers(blockedUsers);
+			userRepository.save(unblockingUser);
+			return "success";
+		}
+		return "there was an error";
 	}
 
 

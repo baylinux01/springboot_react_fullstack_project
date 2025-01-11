@@ -63,6 +63,13 @@ public class UserController {
 		String result=userService.blockUser(request,userToBeBlockedId);
 		return result;
 	}
+	@PostMapping("/unblockuser")
+	public String unblockUser(HttpServletRequest request,Long userToBeUnblockedId) 
+	{ 
+		
+		String result=userService.unblockUser(request,userToBeUnblockedId);
+		return result;
+	}
 	
 	@GetMapping("/getconnectionsofauser")
 	public List<User> getConnectionsOfAUser(Long userId)
@@ -74,6 +81,11 @@ public class UserController {
 	public List<User> getBlockedUsersOfCurrentUser(HttpServletRequest request)
 	{
 		return userService.getBlockedUsersOfCurrentUser(request);
+	}
+	@GetMapping("/getblockedusersofauser")
+	public List<User> getBlockedUsersOfAUser(HttpServletRequest request,Long userId)
+	{
+		return userService.getBlockedUsersOfAUser(request,userId);
 	}
 
 	@GetMapping("/getsearchedusers")

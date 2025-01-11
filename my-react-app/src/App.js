@@ -93,6 +93,7 @@ function App() {
       setConnectionRequests={setConnectionRequests}
       users={users} setUsers={setUsers}
       user2={user2} setUser2={setUser2} 
+      blockedUsersOfUser={blockedUsersOfUser} setBlockedUsersOfUser={setBlockedUsersOfUser}
       unsuccessfulsignin={unsuccessfulsignin} setUnsuccessfulsignin={setUnsuccessfulsignin} 
       user={user} setUser={setUser} password={password} setPassword={setPassword}
       signupformsubmitresult={signupformsubmitresult} setSignupformsubmitresult={setSignupformsubmitresult}>

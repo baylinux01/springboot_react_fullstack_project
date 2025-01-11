@@ -43,7 +43,7 @@ public class ConnectionRequestService {
 		User connectionRequestReceiver=userRepository.findById(connectionRequestReceiverId).orElse(null);
 		if(connectionRequestReceiver.getBlockedUsers().contains(connectionRequestSender)
 				||connectionRequestSender.getBlockedUsers().contains(connectionRequestReceiver))
-			return "conreq cannot be created because of a ban";
+			return "conreq cannot be created because of a block";
 		if(connectionRequestReceiver.getConnections().contains(connectionRequestSender)
 				||connectionRequestSender.getConnections().contains(connectionRequestReceiver))
 			return "there is already a connection between these two users";
