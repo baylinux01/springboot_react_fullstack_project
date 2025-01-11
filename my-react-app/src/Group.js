@@ -13,7 +13,7 @@ import moment from "moment";
 
 
 
-export default function Group({password,setPassword,group,setGroup,user,setUser,bannedUsersOfUser,setBannedUsersOfUser}) {
+export default function Group({password,setPassword,group,setGroup,user,setUser,blockedUsersOfUser,setBlockedUsersOfUser}) {
 
   
 const[newCommentContent,setNewCommentContent] =useState("");
@@ -21,7 +21,7 @@ const[commentToBeQuoted,setCommentToBeQuoted]=useState({content:""});
 const[groupMembers,setGroupMembers]=useState([]);
 const[groupComments,setGroupComments]=useState([]);
 const [groupPosts,setGroupPosts]=useState([]);
-const[bannedUsersOfCommentOwner,setBannedUsersOfCommentOwner]=useState([]);
+const[blockedUsersOfCommentOwner,setBlockedUsersOfCommentOwner]=useState([]);
 const [showPopUp,setShowPopUp]=useState(false);
 const [showPopUp2,setShowPopUp2]=useState(false);
 const [showPopUp3,setShowPopUp3]=useState(false);
@@ -73,17 +73,17 @@ function fetchComments(){
     console.log(user)
   }
 
-  function fetchBannedUsersOfUser(){
+  function fetchBlockedUsersOfUser(){
     axios.defaults.baseURL="http://localhost:8080";
-    axios.get("/users/getbannedusersofcurrentuser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{}})
-    .then((response)=>{setBannedUsersOfUser([...response.data])});
+    axios.get("/users/getblockedusersofcurrentuser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{}})
+    .then((response)=>{setBlockedUsersOfUser([...response.data])});
     
   }
 
-  function fetchBannedUsersOfCommentOwner(id){
+  function fetchBlockedUsersOfCommentOwner(id){
     axios.defaults.baseURL="http://localhost:8080";
-    axios.get("/users/getbannedusersofauser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{userId:id}})
-    .then((response)=>{setBannedUsersOfCommentOwner([...response.data])});
+    axios.get("/users/getblockedusersofauser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{userId:id}})
+    .then((response)=>{setBlockedUsersOfCommentOwner([...response.data])});
     
   }
   function fetchPermissionsOfAUserForAGroup(id){
@@ -287,7 +287,7 @@ function fetchComments(){
         fetchPostsOfAGroup();
         fetchComments();
         fetchMembers();   
-        fetchBannedUsersOfUser();
+        fetchBlockedUsersOfUser();
         fetchPermissionsOfCurrentUserForAGroup();
         
         
@@ -337,7 +337,7 @@ function fetchComments(){
       fetchMembers();
       fetchGroup();
       fetchUser();
-      fetchBannedUsersOfUser();
+      fetchBlockedUsersOfUser();
       setNewCommentContent("");
       setCommentToBeQuoted({content:""});
       //window.history.go(0); // bu kod işlemin gerçekleşmemesine sebep oluyor

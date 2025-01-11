@@ -56,10 +56,11 @@ public class UserController {
 		return result;
 	}
 	
-	@PostMapping("/banuser")
-	public String banUser(HttpServletRequest request,Long userToBeBannedId) 
-	{
-		String result=userService.banUser(request,userToBeBannedId);
+	@PostMapping("/blockuser")
+	public String blockUser(HttpServletRequest request,Long userToBeBlockedId) 
+	{ 
+		
+		String result=userService.blockUser(request,userToBeBlockedId);
 		return result;
 	}
 	
@@ -69,10 +70,10 @@ public class UserController {
 		return userService.getConnectionsOfAUser(userId);
 	}
 	
-	@GetMapping("/getbannedusersofcurrentuser")
-	public List<User> getBannedUsersOfCurrentUser(HttpServletRequest request)
+	@GetMapping("/getblockedusersofcurrentuser")
+	public List<User> getBlockedUsersOfCurrentUser(HttpServletRequest request)
 	{
-		return userService.getBannedUsersOfCurrentUser(request);
+		return userService.getBlockedUsersOfCurrentUser(request);
 	}
 
 	@GetMapping("/getsearchedusers")

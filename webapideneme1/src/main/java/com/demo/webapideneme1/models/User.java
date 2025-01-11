@@ -47,7 +47,7 @@ public class User {
 	private Date birthDate;
 	@JsonIgnore
 	@ManyToMany
-	private List<User> bannedUsers;
+	private List<User> blockedUsers;
 	@JsonIgnore
 	@ManyToMany
 	private List<User> connections;
@@ -110,12 +110,12 @@ public class User {
 		this.birthDate = birthDate;
 	}
 
-	public List<User> getBannedUsers() {
-		return bannedUsers;
+	public List<User> getBlockedUsers() {
+		return blockedUsers;
 	}
 
-	public void setBannedUsers(List<User> bannedUsers) {
-		this.bannedUsers = bannedUsers;
+	public void setBlockedUsers(List<User> blockedUsers) {
+		this.blockedUsers = blockedUsers;
 	}
 
 	public List<User> getConnections() {

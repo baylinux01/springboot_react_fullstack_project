@@ -41,8 +41,8 @@ public class ConnectionRequestService {
 		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
 		User connectionRequestSender=userRepository.findByUsername(username);
 		User connectionRequestReceiver=userRepository.findById(connectionRequestReceiverId).orElse(null);
-		if(connectionRequestReceiver.getBannedUsers().contains(connectionRequestSender)
-				||connectionRequestSender.getBannedUsers().contains(connectionRequestReceiver))
+		if(connectionRequestReceiver.getBlockedUsers().contains(connectionRequestSender)
+				||connectionRequestSender.getBlockedUsers().contains(connectionRequestReceiver))
 			return "conreq cannot be created because of a ban";
 		if(connectionRequestReceiver.getConnections().contains(connectionRequestSender)
 				||connectionRequestSender.getConnections().contains(connectionRequestReceiver))

@@ -54,8 +54,8 @@ public class MessageService {
 			 quotedMessage=messageRepository
 				.findById(quotedMessageId).orElse(null);
 		}
-		if(!messageReceiver.getBannedUsers().contains(messageSender)
-				&&!messageSender.getBannedUsers().contains(messageReceiver)
+		if(!messageReceiver.getBlockedUsers().contains(messageSender)
+				&&!messageSender.getBlockedUsers().contains(messageReceiver)
 				&&messageSender.getConnections().contains(messageReceiver)
 				&&messageReceiver.getConnections().contains(messageSender))
 		{

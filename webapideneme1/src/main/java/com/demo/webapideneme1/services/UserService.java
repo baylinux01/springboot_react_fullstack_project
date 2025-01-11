@@ -270,31 +270,31 @@ public class UserService {
 		return sortedSearchedUsersList;
 	}
 
-	public List<User> getBannedUsersOfCurrentUser(HttpServletRequest request) {
+	public List<User> getBlockedUsersOfCurrentUser(HttpServletRequest request) {
 		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
 		Principal pl=request.getUserPrincipal();
 		String username=pl.getName();
 		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
 		User user=userRepository.findByUsername(username);
-		if(user!=null&&user.getBannedUsers()!=null)
-		return user.getBannedUsers();
+		if(user!=null&&user.getBlockedUsers()!=null)
+		return user.getBlockedUsers();
 		else return null;
 	}
 	@Transactional
-	public String banUser(HttpServletRequest request, Long userToBeBannedId) {
+	public String blockUser(HttpServletRequest request, Long userToBeBlockedId) {
 		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
 		Principal pl=request.getUserPrincipal();
 		String username=pl.getName();
 		/*jwt olmadan requestten kullanıcı adını alma kodları sonu*/
-		User banningUser=userRepository.findByUsername(username);
-		User userToBeBanned=userRepository.findById(userToBeBannedId).orElse(null);
-		if(banningUser==userToBeBanned) return "false";
-		if(!banningUser.getBannedUsers().contains(userToBeBanned))
+		User blockingUser=userRepository.findByUsername(username);
+		User userToBeBlocked=userRepository.findById(userToBeBlockedId).orElse(null);
+		if(blockingUser==userToBeBlocked) return "false";
+		if(!blockingUser.getBlockedUsers().contains(userToBeBlocked))
 		{
-			if(banningUser.getConnections().contains(userToBeBanned))
-				banningUser.getConnections().remove(userToBeBanned);
-			if(userToBeBanned.getConnections().contains(banningUser))
-				userToBeBanned.getConnections().remove(banningUser);
+			if(blockingUser.getConnections().contains(userToBeBlocked))
+				blockingUser.getConnections().remove(userToBeBlocked);
+			if(userToBeBlocked.getConnections().contains(blockingUser))
+				userToBeBlocked.getConnections().remove(blockingUser);
 			
 			List<ConnectionRequest> conreqs=
 					connectionRequestService.getAllConnectionRequests();
@@ -305,10 +305,10 @@ public class UserService {
 				while(i<conreqs.size())
 				{
 					if((conreqs.get(i).getConnectionRequestSender()==
-							userToBeBanned && conreqs.get(i).getConnectionRequestReceiver()==banningUser)
+							userToBeBlocked && conreqs.get(i).getConnectionRequestReceiver()==blockingUser)
 							||
 							(conreqs.get(i).getConnectionRequestReceiver()==
-							userToBeBanned && conreqs.get(i).getConnectionRequestSender()==banningUser))
+							userToBeBlocked && conreqs.get(i).getConnectionRequestSender()==blockingUser))
 						{
 							conreqstoberemoved.add(conreqs.get(i));
 							
@@ -316,10 +316,10 @@ public class UserService {
 							i++;
 				}
 			}
-			banningUser.getBannedUsers().add(userToBeBanned);
+			blockingUser.getBlockedUsers().add(userToBeBlocked);
 			connectionRequestService.removeAll(conreqstoberemoved);
-			userRepository.save(banningUser);
-			userRepository.save(userToBeBanned);
+			userRepository.save(blockingUser);
+			userRepository.save(userToBeBlocked);
 			return "success";
 			
 			

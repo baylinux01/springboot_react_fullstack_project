@@ -140,8 +140,8 @@ public class CommentService {
 					comment.setContent(content);
 					if(commentToBeQuoted!=null)
 					{
-						if(!commentToBeQuoted.getOwner().getBannedUsers().contains(user)
-								&&!user.getBannedUsers().contains(commentToBeQuoted.getOwner()))
+						if(!commentToBeQuoted.getOwner().getBlockedUsers().contains(user)
+								&&!user.getBlockedUsers().contains(commentToBeQuoted.getOwner()))
 						{
 							if(commentToBeQuoted.getGroup()==group)
 							comment.setQuotedComment(commentToBeQuoted);
