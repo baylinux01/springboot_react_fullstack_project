@@ -107,6 +107,7 @@ function App() {
     user2={user2} setUser2={setUser2} 
     unsuccessfulsignin={unsuccessfulsignin} setUnsuccessfulsignin={setUnsuccessfulsignin} 
     user={user} setUser={setUser} password={password} setPassword={setPassword}
+    blockedUsersOfUser={blockedUsersOfUser} setBlockedUsersOfUser={setBlockedUsersOfUser}
     signupformsubmitresult={signupformsubmitresult} setSignupformsubmitresult={setSignupformsubmitresult}>
     </User>}></Route>
 

@@ -227,7 +227,7 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
          
        }} src={`data:image/*;base64,${u.userImage}`}/>
            <Link to={"/users/user/"+u.id} >{u.name+" "+u.surname}</Link>
-           <Button variant="danger" sync="true" onClick={()=>blockUser(u.id)}>Block</Button>
+           <Button variant="danger" sync="true" onClick={()=>{blockUser(u.id);}}>Block</Button>
             </ListGroupItem>
             </div>
             :_.find(blockedUsersOfUser,u)?
@@ -237,7 +237,7 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
          
        }} src={`data:image/*;base64,${u.userImage}`}/>
            <Link to={"/users/user/"+u.id} >{u.name+" "+u.surname}</Link>
-           <Button variant="danger" sync="true" onClick={()=>unblockUser(u.id)}>UnBlock</Button>
+           <Button variant="danger" sync="true" onClick={()=>{unblockUser(u.id);}}>UnBlock</Button>
             </ListGroupItem>
             </div>
             :
@@ -247,7 +247,7 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
          
        }} src={`data:image/*;base64,${u.userImage}`}/>
            <Link to={"/users/user/"+u.id} >{u.name+" "+u.surname}</Link>
-           <Button variant="danger" sync="true" onClick={()=>unblockUser(u.id)}>UnBlock</Button>
+           <Button variant="danger" sync="true" onClick={()=>{unblockUser(u.id);}}>UnBlock</Button>
             </ListGroupItem>
             </div>
           
@@ -265,7 +265,7 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
          
          {users.map(u=>{
           
-         
+        
         //fetchBlockedUsersOfUser2(u.id);
           // getAllConnectionRequests();
           // getAllConnectionsOfCurrentUser();
