@@ -21,7 +21,7 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
       }
       function fetchBlockedUsersOfUser2(id){
         axios.defaults.baseURL="http://localhost:8080";
-        axios.get("/users/getblockedusersofcurrentuser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{userId:id}})
+        axios.get("/users/getblockedusersofauser",{auth: {username: localStorage.getItem("username"),password: localStorage.getItem("password")},params:{userId:id}})
         .then((response)=>{setBlockedUsersOfUser2([...response.data])});
       }
     function blockUser(id)
@@ -265,7 +265,8 @@ export default function Users({ connectionsOfUser,setConnectionsOfUser, connecti
          
          {users.map(u=>{
           
-          //fetchBlockedUsersOfUser2(u.id);
+         
+        //fetchBlockedUsersOfUser2(u.id);
           // getAllConnectionRequests();
           // getAllConnectionsOfCurrentUser();
           //fetchConreqWhoseSenderIsCurrentUser(u.id);
