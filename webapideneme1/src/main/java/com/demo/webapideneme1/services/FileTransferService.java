@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileTransferService {
 
-	private static final String fileStorageAddress="/home/kodcu/DosyaDeposu";
+	private static final String fileStorageAddress="/home/baylinux/DosyaDeposu";
 	
 	
 	
