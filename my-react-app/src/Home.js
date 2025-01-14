@@ -130,7 +130,7 @@ export default function Home(
           fetchUser();
          fetchGroups();
          setShowPopUp(false);
-         window.history.go(0);
+         //window.history.go(0);
          
   }
  
@@ -154,7 +154,7 @@ export default function Home(
       fetchGroups();
       fetchUser();
       setShowPopUp2(false);
-      window.history.go(0);
+      //window.history.go(0);
       
       
       
