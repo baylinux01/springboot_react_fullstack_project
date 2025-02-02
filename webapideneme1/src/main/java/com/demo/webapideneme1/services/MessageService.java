@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.demo.webapideneme1.models.Media;
 import com.demo.webapideneme1.models.Message;
 import com.demo.webapideneme1.models.MessagePost;
 import com.demo.webapideneme1.models.User;
+import com.demo.webapideneme1.repositories.MediaRepository;
 import com.demo.webapideneme1.repositories.MessagePostRepository;
 import com.demo.webapideneme1.repositories.MessageRepository;
 import com.demo.webapideneme1.repositories.UserRepository;
@@ -24,14 +26,16 @@ public class MessageService {
 	UserRepository userRepository;
 	MessageRepository messageRepository;
 	MessagePostRepository messagePostRepository;
+	MediaRepository mediaRepository;
 	
 	@Autowired
 	public MessageService(UserRepository userRepository, MessageRepository messageRepository
-			,MessagePostRepository messagePostRepository) {
+			,MessagePostRepository messagePostRepository,MediaRepository mediaRepository) {
 		super();
 		this.userRepository=userRepository;
 		this.messageRepository = messageRepository;
 		this.messagePostRepository=messagePostRepository;
+		this.mediaRepository=mediaRepository;
 	}
 
 	public Message getOneMessageById(Long messageId) {
@@ -40,7 +44,7 @@ public class MessageService {
 	}
 	@Transactional
 	public String createMessage(HttpServletRequest request, Long messageReceiverId, 
-			String messageContent, Long quotedMessageId) 
+			String messageContent, Long quotedMessageId, Long quotedMediaId) 
 	{
 		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
 		Principal pl=request.getUserPrincipal();
@@ -49,10 +53,16 @@ public class MessageService {
 		User messageSender=userRepository.findByUsername(username);
 		User messageReceiver=userRepository.findById(messageReceiverId).orElse(null);
 		Message quotedMessage=null;
+		Media quotedMedia=null;
 		if(quotedMessageId!=null)
 		{
 			 quotedMessage=messageRepository
 				.findById(quotedMessageId).orElse(null);
+		}
+		else if(quotedMessageId==null&&quotedMediaId!=null)
+		{
+			quotedMedia=mediaRepository
+					.findById(quotedMediaId).orElse(null);
 		}
 		if(!messageReceiver.getBlockedUsers().contains(messageSender)
 				&&!messageSender.getBlockedUsers().contains(messageReceiver)
@@ -68,6 +78,8 @@ public class MessageService {
 							||(quotedMessage.getMessageSender()==messageReceiver
 									&&quotedMessage.getMessageReceiver()==messageSender)))
 			message.setQuotedMessage(quotedMessage);
+			if(message.getQuotedMessage()==null&&quotedMedia!=null)
+			message.setQuotedMedia(quotedMedia);
 			message.setMessageContent(messageContent);
 			messageRepository.save(message);
 			MessagePost messagePost=new MessagePost();

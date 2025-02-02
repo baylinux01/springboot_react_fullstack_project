@@ -36,11 +36,11 @@ public class MessageController {
 	}
 	@PostMapping("/createmessage")
 	public String createMessage(HttpServletRequest request,Long messageReceiverId,
-			String messageContent,Long quotedMessageId)
+			String messageContent,Long quotedMessageId,Long quotedMediaId)
 	{
 		
 		return messageService.createMessage(request,messageReceiverId,
-				messageContent,quotedMessageId);
+				messageContent,quotedMessageId,quotedMediaId);
 	}
 	@PutMapping("/editmessagecontent")
 	public String editMessageContent(HttpServletRequest request,Long messageId,

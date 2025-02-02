@@ -82,9 +82,9 @@ public class CommentController {
 	}
 	
 	@PostMapping("/createcomment")
-	public String createComment(HttpServletRequest request, String content,Long commentIdToBeQuoted,Long groupId)
+	public String createComment(HttpServletRequest request, String content,Long mediaIdToBeQuoted,Long commentIdToBeQuoted,Long groupId)
 	{
-		return commentService.createComment(request,content,commentIdToBeQuoted,groupId);
+		return commentService.createComment(request,content,mediaIdToBeQuoted,commentIdToBeQuoted,groupId);
 		
 	}
 	

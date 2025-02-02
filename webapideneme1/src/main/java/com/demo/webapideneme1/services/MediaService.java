@@ -71,6 +71,8 @@ public class MediaService {
 				media.setMedia_address(fileTransferService.getFilestorageaddress()+File.separator+multipartFileToBeUploaded.getOriginalFilename());
 				media.setContent_type(multipartFileToBeUploaded.getContentType());
 				media.setName(multipartFileToBeUploaded.getOriginalFilename());
+				media.setGroup(group);
+				media.setOwner(user1);
 				mediaRepository.save(media);
 				ugm.setMedia(media);
 				ugm.setUser(user1);
@@ -172,6 +174,7 @@ public class MediaService {
 				media.setMedia_address(fileTransferService.getFilestorageaddress()+File.separator+multipartFileToBeUploaded.getOriginalFilename());
 				media.setContent_type(multipartFileToBeUploaded.getContentType());
 				media.setName(multipartFileToBeUploaded.getOriginalFilename());
+				media.setOwner(user1);
 				mediaRepository.save(media);
 				ugm.setMedia(media);
 				messagePostRepository.save(ugm);

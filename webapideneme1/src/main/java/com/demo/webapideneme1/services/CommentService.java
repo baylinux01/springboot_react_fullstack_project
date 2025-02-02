@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.webapideneme1.models.Comment;
 import com.demo.webapideneme1.models.Group;
+import com.demo.webapideneme1.models.Media;
 import com.demo.webapideneme1.models.Post;
 import com.demo.webapideneme1.models.User;
 import com.demo.webapideneme1.models.UserGroupPermission;
 import com.demo.webapideneme1.repositories.CommentRepository;
 import com.demo.webapideneme1.repositories.GroupRepository;
+import com.demo.webapideneme1.repositories.MediaRepository;
 import com.demo.webapideneme1.repositories.PostRepository;
 import com.demo.webapideneme1.repositories.UserGroupPermissionRepository;
 import com.demo.webapideneme1.repositories.UserRepository;
@@ -31,19 +33,22 @@ public class CommentService {
 	GroupRepository groupRepository;
 	UserGroupPermissionRepository userGroupPermissionRepository;
 	PostRepository postRepository;
+	MediaRepository mediaRepository;
 	
 	@Autowired
 	public CommentService(CommentRepository commentRepository
 			,UserRepository userRepository
 			,GroupRepository groupRepository
 			,UserGroupPermissionRepository userGroupPermissionRepository
-			,PostRepository postRepository) {
+			,PostRepository postRepository
+			,MediaRepository mediaRepository) {
 		super();
 		this.commentRepository = commentRepository;
 		this.userRepository=userRepository;
 		this.groupRepository=groupRepository;
 		this.userGroupPermissionRepository=userGroupPermissionRepository;
 		this.postRepository=postRepository;
+		this.mediaRepository=mediaRepository;
 	}
 
 	public String saveComment(Comment comment) {
@@ -110,7 +115,8 @@ public class CommentService {
 		
 	}
 
-	public String createComment(HttpServletRequest request, String content, Long commentIdToBeQuoted, Long groupId) {
+	public String createComment(HttpServletRequest request, String content
+			,Long mediaIdToBeQuoted, Long commentIdToBeQuoted, Long groupId) {
 		/*jwt olmadan requestten kullanıcı adını alma kodları başlangıcı*/		
 		Principal pl=request.getUserPrincipal();
 		String username=pl.getName();
@@ -119,9 +125,12 @@ public class CommentService {
 		Group group= groupRepository.findById(groupId).orElse(null);
 		String result="";
 		Comment commentToBeQuoted=null;
+		Media mediaToBeQuoted=null;
 		if(commentIdToBeQuoted!=null)
 		commentToBeQuoted=commentRepository.findById(commentIdToBeQuoted).orElse(null);
-		Comment comment;
+		if(commentIdToBeQuoted==null&&mediaIdToBeQuoted!=null)
+		mediaToBeQuoted=mediaRepository.findById(mediaIdToBeQuoted).orElse(null);
+		Comment comment=null;
 		
 		if(user!=null&& group!=null
 				&& group.getMembers().contains(user)
@@ -148,6 +157,16 @@ public class CommentService {
 						}else comment.setQuotedComment(null);
 					}
 					else comment.setQuotedComment(null);
+					if(commentToBeQuoted==null&&mediaToBeQuoted!=null)
+					{
+						if(!mediaToBeQuoted.getOwner().getBlockedUsers().contains(user)
+								&&!user.getBlockedUsers().contains(mediaToBeQuoted.getOwner()))
+						{
+							if(mediaToBeQuoted.getGroup()==group)
+							comment.setQuotedMedia(mediaToBeQuoted);
+						}else comment.setQuotedMedia(null);
+					}
+					else comment.setQuotedMedia(null);
 					commentRepository.save(comment);
 					post.setComment(comment);
 					post.setUser(user);

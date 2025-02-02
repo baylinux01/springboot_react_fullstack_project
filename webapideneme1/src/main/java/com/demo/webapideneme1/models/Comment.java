@@ -31,6 +31,8 @@ public class Comment {
 	private User owner;
 	private String content;
 	@ManyToOne
+	private Media quotedMedia;
+	@ManyToOne
 	private Comment quotedComment;
 //	@OneToMany
 //	private List<Comment> quotingComments;
@@ -48,7 +50,7 @@ public class Comment {
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
 
 	public long getId() {
 		return id;
@@ -82,6 +84,18 @@ public class Comment {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	
+
+	public Media getQuotedMedia() {
+		return quotedMedia;
+	}
+
+
+
+	public void setQuotedMedia(Media quotedMedia) {
+		this.quotedMedia = quotedMedia;
 	}
 
 

@@ -13,6 +13,7 @@ import moment from "moment";
 export default function Message({messages,setMessages,connectionsOfUser,setConnectionsOfUser,connectionRequests,setConnectionRequests,password,setPassword,user2,setUser2,user,setUser}) {
     const [newMessageContent,setNewMessageContent]=useState("");
     const [messageToBeQuoted,setMessageToBeQuoted]=useState({messageContent:""});
+    const[mediaToBeQuoted,setMediaToBeQuoted]=useState({content_type:""});
     const [showPopUp,setShowPopUp]=useState(false);
     const [messageContentToBeEdited,setMessageContentToBeEdited]=useState("");
     const[messageToBeEdited,setMessageToBeEdited]=useState({messageContent:""});
@@ -87,7 +88,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
         const qs=require('qs');
         axios.post("/messages/createmessage", 
           qs.stringify({messageReceiverId:user2Id,messageContent:newMessageContent,
-            quotedMessageId:messageToBeQuoted.id
+            quotedMessageId:messageToBeQuoted.id,quotedMediaId:mediaToBeQuoted.id
           })
         ,{
           auth: {
@@ -100,6 +101,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
         
         setNewMessageContent("");
         setMessageToBeQuoted({messageContent:""});
+        setMediaToBeQuoted({content_type:""});
         getMessagesBetweenTwoUsers();
         getMessagePostsBetweenTwoUsers();
         //window.history.go(0);
@@ -215,6 +217,49 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                     </div>
                     :<div></div>
                   }
+                  {m.message.quotedMedia!=null?
+                    <div style={{backgroundColor:"yellow"}}>
+          {m.message.quotedMedia.content_type.includes("image")?
+          <div>
+            
+              <img src={`${serverUrl}/${m.message.quotedMedia.name}`} style={{width:"50px",height:"50px"}}/>
+              
+            
+              <div>{m.message.quotedMedia.owner.name} {m.message.quotedMedia.owner.surname}</div>
+              <br></br>
+          </div>
+          :<div></div>
+        }
+        {m.message.quotedMedia.content_type.includes("audio")?
+          <div>
+            
+              <audio controls>
+                <source src={`${serverUrl}/${m.message.quotedMedia.name}`} type={m.message.quotedMedia.content_type}/>
+              </audio>
+              
+            
+              <div>{m.message.quotedMedia.owner.name} {m.message.quotedMedia.owner.surname}</div>
+              <br></br>
+          </div>
+          :<div></div>
+        }
+        {m.message.quotedMedia.content_type.includes("video")?
+          <div>
+            
+              <video controls>
+                <source src={`${serverUrl}/${m.message.quotedMedia.name}`} type={m.message.quotedMedia.content_type}/>
+              </video>
+              
+            
+              <div>{m.message.quotedMedia.owner.name} {m.message.quotedMedia.owner.surname}</div>
+              <br></br>
+          </div>
+          :<div></div>
+        }
+                      
+                    </div>
+                    :<div></div>
+                  }
                   <div style={{backgroundColor:"gray"}}>
                   <div>Message Sender- {m.message.messageSender.name} {m.message.messageSender.surname}</div>
                       <div>Message Content- {m.message.messageContent}</div>
@@ -222,14 +267,14 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                       <Button onClick={()=>{setMessageToBeQuoted({...m.message})}}>Quote</Button>
                       {_.isEqual(m.message.messageSender,user)?
                     <div style={{display:'flex',columnGap:"10px"}}>
-                    <Button variant="warning" onClick={()=>{setShowPopUp(true)}}>Edit</Button>
+                    <Button variant="warning" onClick={()=>{setMessageContentToBeEdited(m.message.messageContent);setShowPopUp(true)}}>Edit</Button>
                     <Button variant="danger" onClick={()=>{deleteMessage(m.message.id)}}>Delete</Button>
                     <Modal show={showPopUp} onHide={()=>setShowPopUp(false)}>
     <Modal.Header>
       <Modal.Title>Edit Message</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <input type='text' id='newmessageContent' onChange={(e)=>setMessageContentToBeEdited(e.target.value)}></input>
+      <input type='text' id='newmessageContent'value={messageContentToBeEdited} onChange={(e)=>setMessageContentToBeEdited(e.target.value)}></input>
       
     </Modal.Body>
     <Modal.Footer>
@@ -241,6 +286,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                     <div></div>
                 }
                   </div>
+                  <br></br>
                   </div>
                   :<div></div>
                 }
@@ -251,9 +297,11 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
             
               <img src={`${serverUrl}/${m.media.name}`} style={{width:"50px",height:"50px"}}/>
               
-            
+              <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <br></br>
           </div>
           :<div></div>
         }
@@ -264,9 +312,11 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                 <source src={`${serverUrl}/${m.media.name}`} type={m.media.content_type}/>
               </audio>
               
-            
+              <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <br></br>
           </div>
           :<div></div>
         }
@@ -277,12 +327,15 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                 <source src={`${serverUrl}/${m.media.name}`} type={m.media.content_type}/>
               </video>
               
-            
+              <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <br></br>
           </div>
           :<div></div>
         }
+        <br></br>
         </div>
         :<div></div>
 
@@ -306,6 +359,50 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
              setMessageToBeQuoted({messageContent:""})}>Give up to quote message </Button>
            </div>
            :<div></div>}
+{mediaToBeQuoted!=null&& mediaToBeQuoted.content_type!=""?
+  <div>
+    {mediaToBeQuoted.content_type.includes("image")?
+          <div>
+            
+              <img src={`${serverUrl}/${mediaToBeQuoted.name}`} style={{width:"50px",height:"50px"}}/>
+              
+            
+              <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname}</div>
+          </div>
+          :<div></div>
+        }
+        {mediaToBeQuoted.content_type.includes("audio")?
+          <div>
+            
+              <audio controls>
+                <source src={`${serverUrl}/${mediaToBeQuoted.name}`} type={mediaToBeQuoted.content_type}/>
+              </audio>
+              
+            
+              <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname}</div>
+          </div>
+          :<div></div>
+        }
+        {mediaToBeQuoted.content_type.includes("video")?
+          <div>
+            
+              <video controls>
+                <source src={`${serverUrl}/${mediaToBeQuoted.name}`} type={mediaToBeQuoted.content_type}/>
+              </video>
+              
+            
+              <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname}</div>
+          </div>
+          :<div></div>
+        }
+        
+        <Button variant="info" sync="true" onClick={()=>
+             setMediaToBeQuoted({content_type:""})}>Give up to quote media </Button>
+  </div>
+  :
+  <div></div>
+
+}
             
              
                 <Form sync="true" onSubmit={(e)=>handlenewmessage(e)}>

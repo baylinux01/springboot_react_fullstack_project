@@ -32,7 +32,8 @@ public class Message {
 	//@JsonFormat(shape=JsonFormat.Shape.STRING,pattern="dd-MM-yyyy")
 	private LocalDateTime messageEditDate=LocalDateTime.now(ZoneId.of("Turkey"));
 	private String messageContent;
-	
+	@ManyToOne
+	private Media quotedMedia;
 	@ManyToOne
 	private Message quotedMessage;
 	private boolean read=false;
@@ -73,6 +74,13 @@ public class Message {
 	}
 	public void setMessageContent(String messageContent) {
 		this.messageContent = messageContent;
+	}
+	
+	public Media getQuotedMedia() {
+		return quotedMedia;
+	}
+	public void setQuotedMedia(Media quotedMedia) {
+		this.quotedMedia = quotedMedia;
 	}
 	public Message getQuotedMessage() {
 		return quotedMessage;

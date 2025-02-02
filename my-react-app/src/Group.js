@@ -18,6 +18,8 @@ export default function Group({password,setPassword,group,setGroup,user,setUser,
   
 const[newCommentContent,setNewCommentContent] =useState("");
 const[commentToBeQuoted,setCommentToBeQuoted]=useState({content:""});
+const [commentContentToBeEdited,setCommentContentToBeEdited]=useState("");
+const[mediaToBeQuoted,setMediaToBeQuoted]=useState({content_type:""});
 const[groupMembers,setGroupMembers]=useState([]);
 const[groupComments,setGroupComments]=useState([]);
 const [groupPosts,setGroupPosts]=useState([]);
@@ -28,7 +30,7 @@ const [showPopUp3,setShowPopUp3]=useState(false);
 const [user3Id,setUser3Id]=useState();
 const [permissionsOfAUserForAGroup,setPermissionsOfAUserForAGroup]=useState("");
 const [permissionsOfCurrentUserForAGroup,setPermissionsOfCurrentUserForAGroup]=useState("");
-const [commentContentToBeEdited,setCommentContentToBeEdited]=useState("");
+
 const[file,setFile]=useState(null);
 const[imageUrl,setImageUrl]=useState("");
 
@@ -321,6 +323,8 @@ function fetchComments(){
      params.append("content",newCommentContent);
      if(commentToBeQuoted!=null&&commentToBeQuoted.id!=null)
      params.append("commentIdToBeQuoted",commentToBeQuoted.id);
+    if(mediaToBeQuoted!=null&&mediaToBeQuoted.id!=null)
+    params.append("mediaIdToBeQuoted",mediaToBeQuoted.id);
      axios.defaults.baseURL="http://localhost:8080";
      axios.post("/comments/createcomment", 
       params
@@ -340,6 +344,7 @@ function fetchComments(){
       fetchBlockedUsersOfUser();
       setNewCommentContent("");
       setCommentToBeQuoted({content:""});
+      setMediaToBeQuoted({content_type:""});
       //window.history.go(0); // bu kod işlemin gerçekleşmemesine sebep oluyor
     
     }
@@ -436,6 +441,47 @@ function fetchComments(){
           </div>
           :<div></div>
           }
+          {post.comment.quotedMedia!=null?
+          <div style={{backgroundColor:"yellow"}}>
+             {post.comment.quotedMedia.content_type.includes("image")?
+          <div style={{backgroundColor:"yellow"}}>
+              
+              <img src={`${serverUrl}/${post.comment.quotedMedia.name}`} style={{width:"50px",height:"50px"}}/>
+              
+            <div>{post.comment.quotedMedia.owner.name} {post.comment.quotedMedia.owner.surname} </div>
+            
+           
+            
+          </div>
+          :<div></div>
+        }
+        {post.comment.quotedMedia.content_type.includes("audio")?
+          <div style={{backgroundColor:"yellow"}}>
+            
+              <audio controls>
+              <source src={`${serverUrl}/${post.comment.quotedMedia.name}`} type={post.comment.quotedMedia.content_type}/>
+              </audio>
+              
+              <div>{post.comment.quotedMedia.owner.name} {post.comment.quotedMedia.owner.surname} </div>
+            
+          </div>
+          :<div></div>
+        }
+        {post.comment.quotedMedia.content_type.includes("video")?
+          <div style={{backgroundColor:"yellow"}}>
+            
+              <video controls>
+                <source src={`${serverUrl}/${mediaToBeQuoted.name}`} type={mediaToBeQuoted.content_type}/>
+              </video>
+              
+              <div>{post.comment.quotedMedia.owner.name} {post.comment.quotedMedia.owner.surname} </div>
+            
+          </div>
+          :<div></div>
+        }
+          </div>
+          :<div></div>
+          }
           <div style={{backgroundColor:"gray"}}>
           <div>Comment Owner-{post.comment.owner.name} {post.comment.owner.surname}</div>
           <div>Comment Content- {post.comment.content} </div>
@@ -443,13 +489,13 @@ function fetchComments(){
           <div>Edited at-{moment(post.comment.commentEditDate).format("HH:mm DD-MM-yyyy")}</div>
           </div>
           <div>
-            <Button onClick={()=>{setCommentToBeQuoted(post.comment)}}>Quote</Button>
+            <Button onClick={()=>{setCommentToBeQuoted({...post.comment});setMediaToBeQuoted({content_type:""})}}>Quote</Button>
             <Modal show={showPopUp} onHide={()=>setShowPopUp(false)}>
     <Modal.Header>
       <Modal.Title>Edit Message</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <input type='text' id='newcontent' onChange={(e)=>setCommentContentToBeEdited(e.target.value)}></input>
+      <input type='text' id='newcontent' value={commentContentToBeEdited} onChange={(e)=>setCommentContentToBeEdited(e.target.value)}></input>
       
     </Modal.Body>
     <Modal.Footer>
@@ -458,7 +504,7 @@ function fetchComments(){
     </Modal.Footer>
     </Modal>
             {_.isEqual(user,post.comment.owner)?
-            <Button variant='warning' onClick={()=>{setShowPopUp(true)}}>Edit</Button>
+            <Button variant='warning' onClick={()=>{setCommentContentToBeEdited(post.comment.content);setShowPopUp(true)}}>Edit</Button>
             :<div></div>
           }
           {_.isEqual(user,post.comment.owner)||user.roles.includes("ADMIN")?
@@ -476,9 +522,10 @@ function fetchComments(){
               
               <img src={`${serverUrl}/${post.media.name}`} style={{width:"50px",height:"50px"}}/>
               
-            
+            <div>{post.media.owner.name} {post.media.owner.surname} </div>
             <Button variant='danger' onClick={()=>{deleteMedia(post.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(post.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...post.media});setCommentToBeQuoted({content:""})}}>Quote</Button>
           </div>
           :<div></div>
         }
@@ -489,9 +536,10 @@ function fetchComments(){
               <source src={`${serverUrl}/${post.media.name}`} type={post.media.content_type}/>
               </audio>
               
-            
+              <div>{post.media.owner.name} {post.media.owner.surname} </div>
             <Button variant='danger' onClick={()=>{deleteMedia(post.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(post.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...post.media});setCommentToBeQuoted({content:""})}}>Quote</Button>
           </div>
           :<div></div>
         }
@@ -502,9 +550,10 @@ function fetchComments(){
                 <source src={`${serverUrl}/${post.media.name}`} type={post.media.content_type}/>
               </video>
               
-            
+              <div>{post.media.owner.name} {post.media.owner.surname} </div>
             <Button variant='danger' onClick={()=>{deleteMedia(post.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(post.media.name)}}>Download</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...post.media});setCommentToBeQuoted({content:""})}}>Quote</Button>
           </div>
           :<div></div>
         }
@@ -523,6 +572,53 @@ function fetchComments(){
     :
     <div></div>
   }
+  {mediaToBeQuoted.content_type!=""?
+    <div>
+      {mediaToBeQuoted.content_type.includes("image")?
+          <div style={{backgroundColor:"yellow"}}>
+              
+              <img src={`${serverUrl}/${mediaToBeQuoted.name}`} style={{width:"50px",height:"50px"}}/>
+              
+            <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname} </div>
+            
+           
+            
+          </div>
+          :<div></div>
+        }
+        {mediaToBeQuoted.content_type.includes("audio")?
+          <div style={{backgroundColor:"yellow"}}>
+            
+              <audio controls>
+              <source src={`${serverUrl}/${mediaToBeQuoted.name}`} type={mediaToBeQuoted.content_type}/>
+              </audio>
+              
+              <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname} </div>
+            
+          </div>
+          :<div></div>
+        }
+        {mediaToBeQuoted.content_type.includes("video")?
+          <div style={{backgroundColor:"yellow"}}>
+            
+              <video controls>
+                <source src={`${serverUrl}/${mediaToBeQuoted.name}`} type={mediaToBeQuoted.content_type}/>
+              </video>
+              
+              <div>{mediaToBeQuoted.owner.name} {mediaToBeQuoted.owner.surname} </div>
+            
+          </div>
+          :<div></div>
+        }
+        <Button onClick={()=>{setMediaToBeQuoted({content_type:""})}}>Give Up To Quote</Button>
+    </div>
+    :
+    <div>
+
+    </div>
+  }
+ 
+ 
   {_.find(group.members,user)&&permissionsOfCurrentUserForAGroup.includes("SENDMESSAGE")?
   <div>
     <input type='text' value={newCommentContent} onChange={(e)=>{setNewCommentContent(e.target.value);console.log(newCommentContent)}}/>
