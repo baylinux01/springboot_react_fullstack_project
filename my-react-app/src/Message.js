@@ -264,7 +264,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
                   <div>Message Sender- {m.message.messageSender.name} {m.message.messageSender.surname}</div>
                       <div>Message Content- {m.message.messageContent}</div>
                       <div>Message Date- {moment(m.date).format("HH:mm DD-MM-yyyy")}</div>
-                      <Button onClick={()=>{setMessageToBeQuoted({...m.message})}}>Quote</Button>
+                      <Button onClick={()=>{setMessageToBeQuoted({...m.message});setMediaToBeQuoted({content_type:""})}}>Quote</Button>
                       {_.isEqual(m.message.messageSender,user)?
                     <div style={{display:'flex',columnGap:"10px"}}>
                     <Button variant="warning" onClick={()=>{setMessageContentToBeEdited(m.message.messageContent);setShowPopUp(true)}}>Edit</Button>
@@ -300,7 +300,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
               <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
-            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media});setMessageToBeQuoted({messageContent:""})}}>Quote</Button>
             <br></br>
           </div>
           :<div></div>
@@ -315,7 +315,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
               <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
-            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media});setMessageToBeQuoted({messageContent:""})}}>Quote</Button>
             <br></br>
           </div>
           :<div></div>
@@ -330,7 +330,7 @@ export default function Message({messages,setMessages,connectionsOfUser,setConne
               <div>{m.media.owner.name} {m.media.owner.surname}</div>
             <Button variant='danger' onClick={()=>{deleteMedia(m.media.id)}}>Delete</Button>
             <Button variant='primary' onClick={()=>{downloadFile(m.media.name)}}>Download</Button>
-            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media})}}>Quoted</Button>
+            <Button variant='primary' onClick={()=>{setMediaToBeQuoted({...m.media});setMessageToBeQuoted({messageContent:""})}}>Quote</Button>
             <br></br>
           </div>
           :<div></div>
